@@ -1,55 +1,65 @@
-<!-- local css for body -->
+<!-- local CSS for body -->
 <link rel="stylesheet" type="text/css" href="../css/file_viewer.css">
-<!-- local css for header -->
+
+<!-- local CSS for header -->
 <link rel="stylesheet" type="text/css" href="../css/header.css">
 
-
-<!-- header -->
+<!-- Header Section -->
 <div class="nav-bar" style="position: fixed;">
+    <!-- Back Button -->
     <a href="/" class="back-icon">
         <i class="fa-solid fa-circle-arrow-left" style="color: #b8b8b8;"></i>
     </a>    
+    <!-- Title: CSV Upload -->
     <div class="title">
         CSV Upload
     </div>
+    <!-- Subtitle: Viewer -->
     <div class="sub-title">
         Viewer
     </div>
+    <!-- Displaying the File Name -->
     <div class="file-name">
         <%= fileName %>
     </div>
 </div>
 
-<!-- search bar -->
+<!-- Search Bar Section -->
 <div class="search-bar">
     <form id="searchForm">
+        <!-- Search Input Box -->
         <div class="search-box">
             <input type="text" id="search-input" placeholder="Search data...">
+            <!-- Search Button -->
             <button id="go" class="search-btn" type="button">Go</button>
         </div>
     </form>
+    <!-- Displaying Total Rows -->
     <div>
         <p id="total-rows">Total Rows: <%=length%></p>
     </div>
 </div>
 
-<!-- search results -->
+<!-- Search Results Table -->
 <div>
     <table>
         <thead>
             <tr>
-            <% for(let h of head) { %>
-                <th><%= h %></th>
-            <% } %>
+                <!-- Loop through table headers -->
+                <% for(let h of head) { %>
+                    <th><%= h %></th>
+                <% } %>
             </tr>
         </thead>
         <tbody>
+            <!-- Loop through table data rows -->
             <% for(let row of data) { %>
-            <tr>
-                <% for(let key of Object.keys(row)) { %>
-                    <td><%= row[key] %></td>
-                <% } %>
-            </tr>
+                <tr>
+                    <!-- Loop through row keys (columns) and display cell data -->
+                    <% for(let key of Object.keys(row)) { %>
+                        <td><%= row[key] %></td>
+                    <% } %>
+                </tr>
             <% } %>
         </tbody>
     </table>

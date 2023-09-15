@@ -1,21 +1,21 @@
-/** ------------------ IMPORTING PACKAGE/MODELS ------------------ **/
-const fs = require('fs');
-const csvParser = require('csv-parser');
-const CSV = require('../models/csv');
-const path = require('path');
+/** ------------------ IMPORTING PACKAGES/MODELS ------------------ **/
+const fs = require('fs'); // File System module for file operations
+const csvParser = require('csv-parser'); // CSV parsing library
+const CSV = require('../models/csv'); // Importing the CSV model
+const path = require('path'); // Path module for handling file paths
 
 /** ------------------ EXPORTING FUNCTION To upload a file ------------------ **/
 module.exports.upload = async function(req, res) {
     try {
-        // file is not present
-        if(!req.file) {
+        // Check if a file is not present in the request
+        if (!req.file) {
             return res.status(400).send('No files were uploaded.');
         }
-        // file is not csv
-        if(req.file.mimetype != "text/csv") {
+        // Check if the uploaded file is not a CSV
+        if (req.file.mimetype !== "text/csv") {
             return res.status(400).send('Select CSV files only.');
         }
-        // console.log(req.file);
+        // Create a new CSV document in the database
         let file = await CSV.create({
             fileName: req.file.originalname,
             filePath: req.file.path,
@@ -31,24 +31,24 @@ module.exports.upload = async function(req, res) {
 /** ------------------ EXPORTING FUNCTION To open file viewer page ------------------ **/
 module.exports.view = async function(req, res) {
     try {
-        // console.log(req.params);
+        // Find the CSV document in the database based on the file ID
         let csvFile = await CSV.findOne({file: req.params.id});
-        // console.log(csvFile);
+
+        // Initialize arrays to store CSV data
         const results = [];
-        const header =[];
-        fs.createReadStream(csvFile.filePath) //seeting up the path for file upload
+        const header = [];
+
+        // Read the CSV file and parse its contents
+        fs.createReadStream(csvFile.filePath)
         .pipe(csvParser())
         .on('headers', (headers) => {
             headers.map((head) => {
                 header.push(head);
             });
-            // console.log(header);
         })
-        .on('data', (data) =>
-        results.push(data))
+        .on('data', (data) => results.push(data))
         .on('end', () => {
-            // console.log(results.length);
-            // console.log(results);
+            // Render the file_viewer template with CSV data
             res.render("file_viewer", {
                 title: "File Viewer",
                 fileName: csvFile.fileName,
@@ -57,8 +57,6 @@ module.exports.view = async function(req, res) {
                 length: results.length
             });
         });
-
-
     } catch (error) {
         console.log('Error in fileController/view', error);
         res.status(500).send('Internal server error');
@@ -68,13 +66,14 @@ module.exports.view = async function(req, res) {
 /** ------------------ EXPORTING FUNCTION To delete the file ------------------ **/
 module.exports.delete = async function(req, res) {
     try {
-        // console.log(req.params);
+        // Check if the file exists in the database
         let isFile = await CSV.findOne({file: req.params.id});
 
-        if(isFile){
+        if (isFile) {
+            // Delete the file from the database
             await CSV.deleteOne({file: req.params.id});            
             return res.redirect("/");
-        }else{
+        } else {
             console.log("File not found");
             return res.redirect("/");
         }

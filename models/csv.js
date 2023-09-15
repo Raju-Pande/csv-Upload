@@ -1,27 +1,32 @@
 /** ------------------ IMPORTING MONGOOSE ------------------ **/
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const fileSchema = new mongoose.Schema({
-  fileName: {
-    type: String
+// Define a schema for the 'files' collection in the MongoDB database
+const fileSchema = new mongoose.Schema(
+  {
+    fileName: {
+      type: String, // Define the data type for the 'fileName' field
+    },
+    filePath: {
+      type: String, // Define the data type for the 'filePath' field
+    },
+    file: {
+      type: String, // Define the data type for the 'file' field
+    },
   },
-  filePath : {
-    type:String
-  },
-  file: {
-    type: String
+  {
+    timestamps: {
+      options: { timeZone: "Asia/Kolkata" }, // Add timestamps with a specific time zone
+    },
   }
-}, {
-  timestamps: {
-    options: { timeZone: 'Asia/Kolkata' }
-  }
-});
-
-
-
+);
 
 /** ------------------ MAKING MODEL ------------------ **/
+
+// Create a model named 'files' based on the 'fileSchema' schema
 const files = mongoose.model("files", fileSchema);
 
 /** ------------------ EXPORTING MODEL ------------------ **/
+
+// Export the 'files' model for use in other parts of the application
 module.exports = files;
